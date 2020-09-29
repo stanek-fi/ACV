@@ -1,0 +1,17 @@
+Package: ACV
+Title: Time-Series Cross-Validation Loss Estimation and Testing with Optimal Affine Weighing
+Version: 0.0.1.0000
+Authors@R: 
+    person(given = "Filip",
+           family = "Stanek",
+           role = c("aut", "cre"),
+           email = "stanek.fi@gmail.com")
+Description: Package ACV offers improved time-series cross-validation loss estimator which utilizes also in sample contrasts via optimal affine weighing scheme to achieve higher precision of the estimates. It also offers improved versions of Diebold-Mariano and Ibragimov-Muller test of equal predictive ability which offers more power than their standard counterparts.
+License: use_gpl3_license()
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: forecast
+Suggests: 
+    testthat
