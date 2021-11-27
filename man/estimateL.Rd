@@ -15,6 +15,7 @@ estimateL(
   method = "augmented",
   Phi = NULL,
   bw = NULL,
+  rhoLimit = 1,
   ...
 )
 }

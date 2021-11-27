@@ -31,7 +31,7 @@
 #'
 #' @export
 
-estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = function(y, yhat) {(y - yhat)^2}, method = "augmented", Phi = NULL, bw = NULL, ...) {
+estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = function(y, yhat) {(y - yhat)^2}, method = "augmented", Phi = NULL, bw = NULL, rhoLimit = 1, ...) {
 
   if (is.null(Phi)) {
     Phi <- tsACV(y, algorithm, m, h, v, xreg, lossFunction, ...)
@@ -50,6 +50,7 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
              phiOutSample <- na.omit(c(Phi))[do.call(c, J) > m]
              var <- estimateLongRunVar(phiOutSample, bw) / length(phiOutSample)
            }
+           rho <- NA
          },
 
          "augmented" = {
@@ -59,12 +60,12 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
              })), 0)
            })
            b <- b / sum(b)
-           rho <- estimateRho(Phi)
+           rho <- estimateRho(Phi, rhoLimit)
 
-           I <- diag(mh)
-           Z1 <- diag(mh) + rho^2 / (1 - rho^2) * ShiftMatrix(mh, -v) %*% ShiftMatrix(mh, v)
-           Z2 <- diag(mh) + rho^2 / (1 - rho^2) * (ShiftMatrix(mh, -v) %*% ShiftMatrix(mh, v) + ShiftMatrix(mh, v) %*% ShiftMatrix(mh, -v))
-           Z3 <- diag(mh) + rho^2 / (1 - rho^2) * ShiftMatrix(mh, v) %*% ShiftMatrix(mh, -v)
+           I <- ShiftMatrix(mh, 0)
+           Z1 <- ShiftMatrix(mh, 0) + rho^2 / (1 - rho^2) * ShiftMatrix(mh, -v) %*% ShiftMatrix(mh, v)
+           Z2 <- ShiftMatrix(mh, 0) + rho^2 / (1 - rho^2) * (ShiftMatrix(mh, -v) %*% ShiftMatrix(mh, v) + ShiftMatrix(mh, v) %*% ShiftMatrix(mh, -v))
+           Z3 <- ShiftMatrix(mh, 0) + rho^2 / (1 - rho^2) * ShiftMatrix(mh, v) %*% ShiftMatrix(mh, -v)
            Zu <- -rho / (1 - rho^2) * ShiftMatrix(mh, v)
            Zl <- -rho / (1 - rho^2) * ShiftMatrix(mh, -v)
 
@@ -100,7 +101,8 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
     estimate = sum(na.omit(c(Phi)) * lambda),
     var = var,
     lambda = lambda,
-    Phi = Phi
+    Phi = Phi,
+    rho = rho
   )
   class(output) <- "estimateL"
   return(output)

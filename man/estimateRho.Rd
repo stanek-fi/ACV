@@ -4,7 +4,7 @@
 \alias{estimateRho}
 \title{Title}
 \usage{
-estimateRho(Phi)
+estimateRho(Phi, rhoLimit)
 }
 \description{
 Description

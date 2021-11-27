@@ -45,11 +45,12 @@ tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = fun
   }
   I <- seq(0, (mn - m), by = v)
   yhat <- ts(matrix(NA_real_, nrow = mn, ncol = length(I)))
+  times <- time(y)
 
   for (index in seq_along(I)) {
     i <- I[index]
-    yInSample <- window(y, 1 + i, m + i)
-    yOutSample <- window(y, 1 + m + i, h + m + i)
+    yInSample <- window(y, times[1 + i], times[m + i])
+    yOutSample <- window(y, times[1 + m + i], times[h + m + i])
 
     if (is.null(xreg)) {
       if(all(c("yInSample", "yOutSample", "h")%in%formalArgs(algorithm))){
@@ -62,8 +63,8 @@ tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = fun
         yhatInSample <- fitted(model)
       }
     } else {
-      xregInSample <- window(xreg, 1 + i, m + i)
-      xregOutSample <- window(xreg, 1 + m + i, h + m + i)
+      xregInSample <- window(xreg, times[1 + i], times[m + i])
+      xregOutSample <- window(xreg, times[1 + m + i], times[h + m + i])
 
       if(all(c("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")%in%formalArgs(algorithm))){
         model <- algorithm(yInSample = yInSample, yOutSample = yOutSample, h = h, xregInSample = xregInSample, xregOutSample = xregOutSample, ...)

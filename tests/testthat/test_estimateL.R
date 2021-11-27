@@ -9,11 +9,15 @@ algorithm <- Arima
 m <- 35
 h <- 1
 v <- 1
+# h <- 5
+# v <- 5
+# index=1
 Phi <- tsACV(y, algorithm, m, h = h, v = v, xreg = xreg)
 
 test_that("estimateLACV", {
-  LACVhat1 <- estimateL(y, algorithm, m, h, v, xreg, method = "augmented")
-  LACVhat2 <- estimateL(Phi = Phi, method = "augmented")
+  LACVhat1 <- estimateL(y, algorithm, m, h, v, xreg, method = "augmented", rhoLimit = 1)
+  LACVhat2 <- estimateL(Phi = Phi, method = "augmented", rhoLimit = 1)
+  expect_true(abs(LACVhat1$estimate - 0.006953053) < 1e-9)
   expect_true(abs(LACVhat1$estimate - LACVhat2$estimate) < 1e-10)
 })
 
