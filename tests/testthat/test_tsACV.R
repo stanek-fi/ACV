@@ -21,7 +21,7 @@ algorithm <- function(yInSample, yOutSample, h, xregInSample, xregOutSample) {
 
 test_that("tsACV", {
   Phi1 <- tsACV(y, algorithm, m, h = h, v = v, xreg = xreg)
-  algorithm <- Arima
+  algorithm <- forecast::Arima
   Phi2 <- tsACV(y, algorithm, m, h = h, v = v, xreg = xreg)
   expect_true(mean(abs(Phi1 - Phi2), na.rm = T) < 1e-10)
 })

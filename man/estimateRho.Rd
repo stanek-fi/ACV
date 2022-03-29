@@ -2,11 +2,11 @@
 % Please edit documentation in R/estimateRho.R
 \name{estimateRho}
 \alias{estimateRho}
-\title{Title}
+\title{Estimate rho coefficient}
 \usage{
 estimateRho(Phi, rhoLimit)
 }
 \description{
-Description
+Routine for estimating the rho coefficient.
 }
 \keyword{internal}

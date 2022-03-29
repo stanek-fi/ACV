@@ -2,7 +2,7 @@
 % Please edit documentation in R/tsACV.R
 \name{tsACV}
 \alias{tsACV}
-\title{Perform time-series cross-validation for a given algorithm}
+\title{Perform time-series cross-validation}
 \usage{
 tsACV(
   y,
@@ -16,42 +16,37 @@ tsACV(
 )
 }
 \arguments{
-\item{y}{Univariate time-series object}
+\item{y}{Univariate time-series object.}
 
 \item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments ("yInSample", "yOutSample", "h") or ("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample") as inputs and produces list with named elements ("yhatInSample", "yhatOutSample") containing vectors of in-sample and out-of-sample forecast.}
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
-\item{m}{Length of the window on which the algorithm ought to be trained.}
+\item{m}{Length of the window on which the algorithm should be trained.}
 
-\item{h}{Number of predictions made after single training the algorithm.}
+\item{h}{Number of predictions made after a single training of the algorithm.}
 
-\item{v}{Number of periods by which the estimation window is shifted once the predictions are generated.}
+\item{v}{Number of periods by which the estimation window progresses forward once the predictions are generated.}
 
 \item{xreg}{Matrix of exogenous regressors supplied to the algorithm (if applicable).}
 
-\item{lossFunction}{Loss function used to compute contrasts (defaults to square loss).}
+\item{lossFunction}{Loss function used to compute contrasts (defaults to squared error).}
 
 \item{...}{Other parameters passed to the algorithm.}
 }
 \value{
-Matrix of computed contrasts. Each row corresponds to particular period of the y time-series and each column corresponds to particular location of the training window.
+Matrix of computed contrasts. Each row corresponds to a particular period of the y time-series and each column corresponds to a particular location of the training window.
 }
 \description{
-Function tsACV computes contrasts between forecast produced by a given algorithm and the original time-series on which the algorithm is trained.
-This can be than used to estimate the loss of the algorithm.
-Unlike the similar tsCV function from forecast package however, taACV also records in-sample contrasts as these can be exploited to produce more accurate loss estimates.
+Function \code{tsACV} computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.
+This can then be used to estimate the loss of the algorithm.
+Unlike the similar \code{tsCV} function from \code{forecast} package, \code{tsACV} also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
 }
 \examples{
-
-mn <- 40
-y <- rnorm(mn)
+set.seed(1)
+y <- rnorm(40)
 m <- 36
 h <- 1
 v <- 1
-algorithm <- function(y) {
-  Arima(y, order = c(1, 0, 0))
-}
-Phi <- tsACV(y, algorithm, m = m, h = h, v = v)
-Phi
+tsACV(y, forecast::Arima, m = m, h = h, v = v)
 
 }

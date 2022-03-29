@@ -2,11 +2,11 @@
 % Please edit documentation in R/infoPhi.R
 \name{infoPhi}
 \alias{infoPhi}
-\title{Title}
+\title{Recover information about \code{Phi}}
 \usage{
 infoPhi(Phi)
 }
 \description{
-Description
+Recovers all the necessary parameters using which the \code{Phi} was constructed.
 }
 \keyword{internal}

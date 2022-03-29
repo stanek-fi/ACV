@@ -1,59 +1,64 @@
-#' Estimate loss of a given algorithm
+#' Estimate out-of-sample loss
 #'
-#' Function estimateL estimate loss of a given algorithm on time-series y. By default, it uses the optimal weighting scheme which exploits also in-sample contrasts in order to deliver more precise estimates than regular estimators.
+#' Function `estimateL` estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
 #'
-#' @param y Univariate time-series object
+#' @param y Univariate time-series object.
 #' @param algorithm Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-#' Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments ("yInSample", "yOutSample", "h") or ("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample") as inputs and produces list with named elements ("yhatInSample", "yhatOutSample") containing vectors of in-sample and out-of-sample forecast.
-#' @param m Length of the window on which the algorithm ought to be trained.
-#' @param h Number of predictions made after single training the algorithm.
-#' @param v Number of periods by which the estimation window is shifted once the predictions are generated.
+#' Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments `("yInSample", "yOutSample", "h")` or `("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")` as inputs and produces list with named elements `("yhatInSample", "yhatOutSample")` containing vectors of in-sample and out-of-sample forecasts.
+#' @param m Length of the window on which the algorithm should be trained.
+#' @param h Number of predictions made after a single training of the algorithm.
+#' @param v Number of periods by which the estimation window progresses forward once the predictions are generated.
 #' @param xreg Matrix of exogenous regressors supplied to the algorithm (if applicable).
-#' @param lossFunction Loss function used to compute contrasts (defaults to square loss).
-#' @param method Can attain values "augmented"  for the improved estimator which optimally utilizes also in-sample contrast or "regular" for the standard loss estimator.
-#' @param Phi One can also directly supply Phi; the matrix of contrasts produced by tsACV in which case parameters: y, algorithm, m, h, v, xreg, lossFunction are not required.
-#' @param bw Bandwidth for long run variance estimator. If null, bw is selected according to common rule of thumb (3/4)*n^(1/3).
+#' @param lossFunction Loss function used to compute contrasts (defaults to squared error).
+#' @param method Can be set to either `"optimal"` for the estimator which optimally utilizes also the in-sample performance or `"convetional"` for the conventional loss estimator.
+#' @param Phi You can also directly supply `Phi`; the matrix of contrasts produced by `tsACV`. In this case parameters: `y`, `algorithm`, `m`, `h`, `v`, `xreg`, `lossFunction` are ignored.
+#' @param bw Bandwidth for the long run variance estimator. If `NULL`, `bw` is selected according to `(3/4)*n^(1/3)`.
+#' @param rhoLimit Parameter `rhoLimit` limits to the absolute value of the estimated `rho` coefficient. This is useful as estimated values very close to 1 might cause instability.
 #' @param ... Other parameters passed to the algorithm.
 #'
-#' @return List containing loss estimate and its estimated variance along with some other auxiliary information like matrix of contrasts Phi and optimal weight vector lambda.
+#' @return List containing loss estimate and its estimated variance along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
 #'
 #' @examples
-#'
-#' mn <- 40
-#' y <- rnorm(mn)
+#' set.seed(1)
+#' y <- rnorm(40)
 #' m <- 36
 #' h <- 1
 #' v <- 1
-#' algorithm <- function(y) {
-#'   Arima(y, order = c(1, 0, 0))
-#' }
-#' estimateL(y, algorithm, m = m, h = h, v = v)
+#' estimateL(y, forecast::Arima, m = m, h = h, v = v)
 #'
 #' @export
 
-estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = function(y, yhat) {(y - yhat)^2}, method = "augmented", Phi = NULL, bw = NULL, rhoLimit = 1, ...) {
+estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = function(y, yhat) {(y - yhat)^2}, method = "optimal", Phi = NULL, bw = NULL, rhoLimit = 1, ...) {
 
   if (is.null(Phi)) {
     Phi <- tsACV(y, algorithm, m, h, v, xreg, lossFunction, ...)
   }
-  list2env(infoPhi(Phi), environment())
+  # list2env(infoPhi(Phi), environment())
+  temp <- infoPhi(Phi)
+  K <- temp$K
+  mn <- temp$mn
+  m <- temp$m
+  v <- temp$v
+  h <- temp$h
+  mh <- temp$mh
+  J <- temp$J
 
   switch(method,
 
-         "regular" = {
+         "conventional" = {
            lambda <- do.call(c, J) > m
            lambda <- lambda / sum(lambda)
            if (v != h) {
              warning("Currently, standart error estimation is supported only for h = v.")
              var <- NA
            } else {
-             phiOutSample <- na.omit(c(Phi))[do.call(c, J) > m]
+             phiOutSample <- stats::na.omit(c(Phi))[do.call(c, J) > m]
              var <- estimateLongRunVar(phiOutSample, bw) / length(phiOutSample)
            }
            rho <- NA
          },
 
-         "augmented" = {
+         "optimal" = {
            b <- sapply(1:mh, function(x) {
              ifelse(x > m, sum(sapply(J, function(Jk) {
                x %in% Jk
@@ -90,7 +95,7 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
              warning("Currently, standart error estimation is supported only for h = v.")
              var <- NA
            }else{
-             phiOutSample <- na.omit(c(Phi))[do.call(c, J) > m]
+             phiOutSample <- stats::na.omit(c(Phi))[do.call(c, J) > m]
              varRatio <- c(t(b) %*% BViBi %*% b) / (1 / length(phiOutSample))
              var <- estimateLongRunVar(phiOutSample, bw) / length(phiOutSample) * varRatio
            }
@@ -98,7 +103,7 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
   )
 
   output <- list(
-    estimate = sum(na.omit(c(Phi)) * lambda),
+    estimate = sum(stats::na.omit(c(Phi)) * lambda),
     var = var,
     lambda = lambda,
     Phi = Phi,

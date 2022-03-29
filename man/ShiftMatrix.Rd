@@ -2,11 +2,11 @@
 % Please edit documentation in R/ShiftMatrix.R
 \name{ShiftMatrix}
 \alias{ShiftMatrix}
-\title{Title}
+\title{Construct shift matrix}
 \usage{
 ShiftMatrix(n, q)
 }
 \description{
-Description
+Constructs shift matrix of size \code{n} with \code{q} shift.
 }
 \keyword{internal}

@@ -2,11 +2,11 @@
 % Please edit documentation in R/print.estimateL.R
 \name{print.estimateL}
 \alias{print.estimateL}
-\title{Title}
+\title{Printing method for \code{estimateL}}
 \usage{
 \method{print}{estimateL}(x, ...)
 }
 \description{
-Description
+Prettify the output of \code{estimateL} when printed.
 }
 \keyword{internal}

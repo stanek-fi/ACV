@@ -2,11 +2,11 @@
 % Please edit documentation in R/estimateLongRunVar.R
 \name{estimateLongRunVar}
 \alias{estimateLongRunVar}
-\title{Title}
+\title{Estimate long-run variance}
 \usage{
 estimateLongRunVar(x, bw = NULL)
 }
 \description{
-Description
+Routine for estimating the long-run variance.
 }
 \keyword{internal}

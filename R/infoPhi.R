@@ -1,9 +1,8 @@
-#' Title
+#' Recover information about `Phi`
 #'
-#' Description
+#' Recovers all the necessary parameters using which the `Phi` was constructed.
 #' @export
 #' @keywords internal
-
 
 infoPhi <- function(Phi) {
   K <- ncol(Phi)

@@ -4,7 +4,7 @@ library(ACV)
 mn <- 40
 start=c(2000,1)
 frequency=4
-algorithm <- Arima
+algorithm <- forecast::Arima
 m <- 30
 h <- 1
 v <- 1

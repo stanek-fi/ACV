@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimateL.R
 \name{estimateL}
 \alias{estimateL}
-\title{Estimate loss of a given algorithm}
+\title{Estimate out-of-sample loss}
 \usage{
 estimateL(
   y,
@@ -12,7 +12,7 @@ estimateL(
   v = 1,
   xreg = NULL,
   lossFunction = function(y, yhat) {     (y - yhat)^2 },
-  method = "augmented",
+  method = "optimal",
   Phi = NULL,
   bw = NULL,
   rhoLimit = 1,
@@ -20,45 +20,43 @@ estimateL(
 )
 }
 \arguments{
-\item{y}{Univariate time-series object}
+\item{y}{Univariate time-series object.}
 
 \item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments ("yInSample", "yOutSample", "h") or ("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample") as inputs and produces list with named elements ("yhatInSample", "yhatOutSample") containing vectors of in-sample and out-of-sample forecast.}
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
-\item{m}{Length of the window on which the algorithm ought to be trained.}
+\item{m}{Length of the window on which the algorithm should be trained.}
 
-\item{h}{Number of predictions made after single training the algorithm.}
+\item{h}{Number of predictions made after a single training of the algorithm.}
 
-\item{v}{Number of periods by which the estimation window is shifted once the predictions are generated.}
+\item{v}{Number of periods by which the estimation window progresses forward once the predictions are generated.}
 
 \item{xreg}{Matrix of exogenous regressors supplied to the algorithm (if applicable).}
 
-\item{lossFunction}{Loss function used to compute contrasts (defaults to square loss).}
+\item{lossFunction}{Loss function used to compute contrasts (defaults to squared error).}
 
-\item{method}{Can attain values "augmented"  for the improved estimator which optimally utilizes also in-sample contrast or "regular" for the standard loss estimator.}
+\item{method}{Can be set to either \code{"optimal"} for the estimator which optimally utilizes also the in-sample performance or \code{"convetional"} for the conventional loss estimator.}
 
-\item{Phi}{One can also directly supply Phi; the matrix of contrasts produced by tsACV in which case parameters: y, algorithm, m, h, v, xreg, lossFunction are not required.}
+\item{Phi}{You can also directly supply \code{Phi}; the matrix of contrasts produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
 
-\item{bw}{Bandwidth for long run variance estimator. If null, bw is selected according to common rule of thumb (3/4)*n^(1/3).}
+\item{bw}{Bandwidth for the long run variance estimator. If \code{NULL}, \code{bw} is selected according to \code{(3/4)*n^(1/3)}.}
+
+\item{rhoLimit}{Parameter \code{rhoLimit} limits to the absolute value of the estimated \code{rho} coefficient. This is useful as estimated values very close to 1 might cause instability.}
 
 \item{...}{Other parameters passed to the algorithm.}
 }
 \value{
-List containing loss estimate and its estimated variance along with some other auxiliary information like matrix of contrasts Phi and optimal weight vector lambda.
+List containing loss estimate and its estimated variance along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
 }
 \description{
-Function estimateL estimate loss of a given algorithm on time-series y. By default, it uses the optimal weighting scheme which exploits also in-sample contrasts in order to deliver more precise estimates than regular estimators.
+Function \code{estimateL} estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
 }
 \examples{
-
-mn <- 40
-y <- rnorm(mn)
+set.seed(1)
+y <- rnorm(40)
 m <- 36
 h <- 1
 v <- 1
-algorithm <- function(y) {
-  Arima(y, order = c(1, 0, 0))
-}
-estimateL(y, algorithm, m = m, h = h, v = v)
+estimateL(y, forecast::Arima, m = m, h = h, v = v)
 
 }

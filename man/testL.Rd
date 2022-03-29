@@ -2,7 +2,7 @@
 % Please edit documentation in R/testL.R
 \name{testL}
 \alias{testL}
-\title{Test equality of losses of two algorithms}
+\title{Test equality of out-of-sample losses of two algorithms}
 \usage{
 testL(
   y,
@@ -13,7 +13,7 @@ testL(
   v = 1,
   xreg = NULL,
   lossFunction = function(y, yhat) {     (y - yhat)^2 },
-  method = "augmented",
+  method = "optimal",
   test = "Diebold-Mariano",
   Ha = "!=0",
   Phi = NULL,
@@ -23,55 +23,54 @@ testL(
 )
 }
 \arguments{
-\item{y}{Univariate time-series object}
+\item{y}{Univariate time-series object.}
 
 \item{algorithm1}{First algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments ("yInSample", "yOutSample", "h") or ("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample") as inputs and produces list with named elements ("yhatInSample", "yhatOutSample") containing vectors of in-sample and out-of-sample forecast.}
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
 \item{algorithm2}{Second algorithm. See above.}
 
-\item{m}{Length of the window on which the algorithm ought to be trained.}
+\item{m}{Length of the window on which the algorithm should be trained.}
 
-\item{h}{Number of predictions made after single training the algorithm.}
+\item{h}{Number of predictions made after a single training of the algorithm.}
 
-\item{v}{Number of periods by which the estimation window is shifted once the predictions are generated.}
+\item{v}{Number of periods by which the estimation window progresses forward once the predictions are generated.}
 
 \item{xreg}{Matrix of exogenous regressors supplied to the algorithm (if applicable).}
 
-\item{lossFunction}{Loss function used to compute contrasts (defaults to square loss).}
+\item{lossFunction}{Loss function used to compute contrasts (defaults to squared error).}
 
-\item{method}{Can attain values "augmented"  for the improved estimator which optimally utilizes also in-sample contrast or "regular" for the standard loss estimator.}
+\item{method}{Can be set to either \code{"optimal"} for the test which optimally utilizes also the in-sample performance or \code{"convetional"} for the conventional test.}
 
-\item{test}{Type of test which is to be executed. Can attain values "Diebold-Mariano" for canonical test of equal predictive ability or "Ibragimov-Muller" sub-sampling t-test.}
+\item{test}{Type of the test which is to be executed. Can attain values \code{"Diebold-Mariano"} for the canonical test of equal predictive ability or \code{"Ibragimov-Muller"} for the sub-sampling t-test.}
 
-\item{Ha}{Alternative hypothesis. Can attain "!=0" for two sided test or "<0" and ">0" for one sided test.}
+\item{Ha}{Alternative hypothesis. Can attain values \code{"!=0"} for two sided test or \code{"<0"} and \code{">0"} for one sided tests.}
 
-\item{Phi}{One can also directly supply Phi=Phi1-Phi2; the matrix of contrasts differentials produced by tsACV in which case parameters: y, algorithm, m, h, v, xreg, lossFunction are not required.}
+\item{Phi}{You can also directly supply \code{Phi=Phi1-Phi2}; the matrix of contrasts differentials produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
 
-\item{bw}{Applicable to "Diebold-Mariano" test. Bandwidth for long run variance estimator. If null, bw is selected according to common rule of thumb (3/4)*n^(1/3).}
+\item{bw}{Applicable to \code{"Diebold-Mariano"} test. Bandwidth for the long run variance estimator. If \code{NULL}, \code{bw} is selected according to \code{(3/4)*n^(1/3)}.}
 
-\item{groups}{Applicable to "Ibragimov-Muller" test. Number of groups to which the data is to be divided.}
+\item{groups}{Applicable to \code{"Ibragimov-Muller"} test. The number of groups to which the data is to be divided.}
 
-\item{...}{Other parameters passed to the algorithm.}
+\item{...}{Other parameters passed to algorithms.}
 }
 \value{
-List containing loss differential estimate and associated p-value along with some other auxiliary information like matrix of contrasts Phi and optimal weight vector lambda.
+List containing loss differential estimate and associated p-value along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
 }
 \description{
-Function testL test null hypothesis of equal predictive ability of algorithm1 and algorithm2 on time series y. By default, it uses the optimal weighting scheme which exploits also in-sample contrasts in order to deliver more power than regular tests.
+Function \code{testL} tests the null hypothesis of equal predictive ability of \code{algorithm1} and \code{algorithm2} on time series \code{y}.
 }
 \examples{
-
-mn <- 40
-y <- rnorm(mn)
+set.seed(1)
+y <- rnorm(40)
 m <- 36
 h <- 1
 v <- 1
 algorithm1 <- function(y) {
-  Arima(y, order = c(1, 0, 0))
+  forecast::Arima(y, order = c(1, 0, 0))
 }
 algorithm2 <- function(y) {
-  Arima(y, order = c(2, 0, 0))
+  forecast::Arima(y, order = c(2, 0, 0))
 }
 testL(y, algorithm1, algorithm2, m = m, h = h, v = v)
 

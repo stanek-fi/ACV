@@ -1,9 +1,8 @@
-#' Title
+#' Printing method for `testL`
 #'
-#' Description
+#' Prettify the output of `testL` when printed.
 #' @export
 #' @keywords internal
-
 
 print.testL <- function(x, ...){
   cat(x$test, "test\n")

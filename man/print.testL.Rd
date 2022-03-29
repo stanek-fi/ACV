@@ -2,11 +2,11 @@
 % Please edit documentation in R/print.testL.R
 \name{print.testL}
 \alias{print.testL}
-\title{Title}
+\title{Printing method for \code{testL}}
 \usage{
 \method{print}{testL}(x, ...)
 }
 \description{
-Description
+Prettify the output of \code{testL} when printed.
 }
 \keyword{internal}
