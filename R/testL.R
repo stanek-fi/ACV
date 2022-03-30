@@ -1,6 +1,6 @@
 #' Test equality of out-of-sample losses of two algorithms
 #'
-#' Function `testL` tests the null hypothesis of equal predictive ability of `algorithm1` and `algorithm2` on time series `y`.
+#' Function `testL()` tests the null hypothesis of equal predictive ability of `algorithm1` and `algorithm2` on time series `y`.
 #'
 #' @param y Univariate time-series object.
 #' @param algorithm1  First algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
@@ -44,7 +44,6 @@ testL <- function(y, algorithm1, algorithm2, m, h = 1, v = 1, xreg = NULL, lossF
     Phi2 <- tsACV(y, algorithm2, m, h, v, xreg, lossFunction, ...)
     Phi <- Phi1 - Phi2
   }
-  # list2env(infoPhi(Phi), environment())
   temp <- infoPhi(Phi)
   K <- temp$K
   mn <- temp$mn

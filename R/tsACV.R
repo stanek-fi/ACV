@@ -1,8 +1,8 @@
 #' Perform time-series cross-validation
 #'
-#' Function `tsACV` computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.
+#' Function `tsACV()` computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.
 #' This can then be used to estimate the loss of the algorithm.
-#' Unlike the similar `tsCV` function from `forecast` package, `tsACV` also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
+#' Unlike the similar `tsCV()` function from the `'forecast'` package, `tsACV()` also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
 #'
 #' @param y Univariate time-series object.
 #' @param algorithm Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.

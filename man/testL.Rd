@@ -58,7 +58,7 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 List containing loss differential estimate and associated p-value along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
 }
 \description{
-Function \code{testL} tests the null hypothesis of equal predictive ability of \code{algorithm1} and \code{algorithm2} on time series \code{y}.
+Function \code{testL()} tests the null hypothesis of equal predictive ability of \code{algorithm1} and \code{algorithm2} on time series \code{y}.
 }
 \examples{
 set.seed(1)

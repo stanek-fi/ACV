@@ -1,6 +1,6 @@
 #' Estimate out-of-sample loss
 #'
-#' Function `estimateL` estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
+#' Function `estimateL()` estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
 #'
 #' @param y Univariate time-series object.
 #' @param algorithm Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
@@ -33,7 +33,6 @@ estimateL <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction =
   if (is.null(Phi)) {
     Phi <- tsACV(y, algorithm, m, h, v, xreg, lossFunction, ...)
   }
-  # list2env(infoPhi(Phi), environment())
   temp <- infoPhi(Phi)
   K <- temp$K
   mn <- temp$mn

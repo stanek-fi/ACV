@@ -49,7 +49,7 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 List containing loss estimate and its estimated variance along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
 }
 \description{
-Function \code{estimateL} estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
+Function \code{estimateL()} estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.
 }
 \examples{
 set.seed(1)

@@ -37,9 +37,9 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 Matrix of computed contrasts. Each row corresponds to a particular period of the y time-series and each column corresponds to a particular location of the training window.
 }
 \description{
-Function \code{tsACV} computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.
+Function \code{tsACV()} computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.
 This can then be used to estimate the loss of the algorithm.
-Unlike the similar \code{tsCV} function from \code{forecast} package, \code{tsACV} also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
+Unlike the similar \code{tsCV()} function from the \code{'forecast'} package, \code{tsACV()} also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
 }
 \examples{
 set.seed(1)
