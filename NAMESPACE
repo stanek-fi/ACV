@@ -2,10 +2,10 @@
 
 S3method(print,estimateL)
 S3method(print,testL)
-export(ShiftMatrix)
 export(estimateL)
 export(estimateLongRunVar)
 export(estimateRho)
 export(infoPhi)
+export(shiftMatrix)
 export(testL)
 export(tsACV)

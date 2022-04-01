@@ -15,15 +15,15 @@ estimateL(
   method = "optimal",
   Phi = NULL,
   bw = NULL,
-  rhoLimit = 1,
+  rhoLimit = 0.99,
   ...
 )
 }
 \arguments{
 \item{y}{Univariate time-series object.}
 
-\item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
+\item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to \code{fitted} and \code{forecast} methods.
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces a list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
 \item{m}{Length of the window on which the algorithm should be trained.}
 
@@ -37,7 +37,7 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 
 \item{method}{Can be set to either \code{"optimal"} for the estimator which optimally utilizes also the in-sample performance or \code{"convetional"} for the conventional loss estimator.}
 
-\item{Phi}{You can also directly supply \code{Phi}; the matrix of contrasts produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
+\item{Phi}{User can also directly supply \code{Phi}; the matrix of contrasts produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
 
 \item{bw}{Bandwidth for the long run variance estimator. If \code{NULL}, \code{bw} is selected according to \code{(3/4)*n^(1/3)}.}
 
@@ -46,7 +46,7 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 \item{...}{Other parameters passed to the algorithm.}
 }
 \value{
-List containing loss estimate and its estimated variance along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
+List containing loss estimate and its estimated variance along with some other auxiliary information like the matrix of contrasts \code{Phi} and the weights used for computation.
 }
 \description{
 Function \code{estimateL()} estimates the out-of-sample loss of a given algorithm on specified time-series. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver a more precise estimate than the conventional estimator.

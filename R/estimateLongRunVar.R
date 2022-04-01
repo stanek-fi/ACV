@@ -1,6 +1,12 @@
 #' Estimate long-run variance
 #'
-#' Routine for estimating the long-run variance.
+#' Internal function for estimating the long-run variance.
+#'
+#' @param x Univariate time-series object.
+#' @param bw Bandwidth for long run variance estimation.
+#'
+#' @return Estimated long run variance (numeric vector of length 1).
+#'
 #' @export
 #' @keywords internal
 

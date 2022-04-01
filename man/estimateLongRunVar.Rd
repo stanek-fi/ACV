@@ -6,7 +6,15 @@
 \usage{
 estimateLongRunVar(x, bw = NULL)
 }
+\arguments{
+\item{x}{Univariate time-series object.}
+
+\item{bw}{Bandwidth for long run variance estimation.}
+}
+\value{
+Estimated long run variance (numeric vector of length 1).
+}
 \description{
-Routine for estimating the long-run variance.
+Internal function for estimating the long-run variance.
 }
 \keyword{internal}

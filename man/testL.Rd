@@ -19,14 +19,15 @@ testL(
   Phi = NULL,
   bw = NULL,
   groups = 2,
+  rhoLimit = 0.99,
   ...
 )
 }
 \arguments{
 \item{y}{Univariate time-series object.}
 
-\item{algorithm1}{First algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
+\item{algorithm1}{First algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to \code{fitted} and \code{forecast} methods.
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces a list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
 \item{algorithm2}{Second algorithm. See above.}
 
@@ -46,19 +47,21 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 
 \item{Ha}{Alternative hypothesis. Can attain values \code{"!=0"} for two sided test or \code{"<0"} and \code{">0"} for one sided tests.}
 
-\item{Phi}{You can also directly supply \code{Phi=Phi1-Phi2}; the matrix of contrasts differentials produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
+\item{Phi}{User can also directly supply \code{Phi=Phi1-Phi2}; the matrix of contrasts differentials produced by \code{tsACV}. In this case parameters: \code{y}, \code{algorithm}, \code{m}, \code{h}, \code{v}, \code{xreg}, \code{lossFunction} are ignored.}
 
 \item{bw}{Applicable to \code{"Diebold-Mariano"} test. Bandwidth for the long run variance estimator. If \code{NULL}, \code{bw} is selected according to \code{(3/4)*n^(1/3)}.}
 
 \item{groups}{Applicable to \code{"Ibragimov-Muller"} test. The number of groups to which the data is to be divided.}
 
+\item{rhoLimit}{Parameter \code{rhoLimit} limits to the absolute value of the estimated \code{rho} coefficient. This is useful as estimated values very close to 1 might cause instability.}
+
 \item{...}{Other parameters passed to algorithms.}
 }
 \value{
-List containing loss differential estimate and associated p-value along with some other auxiliary information like the matrix of contrasts Phi and the weights used for computation.
+List containing loss differential estimate and associated p-value along with some other auxiliary information like the matrix of contrasts differentials \code{Phi} and the weights used for computation.
 }
 \description{
-Function \code{testL()} tests the null hypothesis of equal predictive ability of \code{algorithm1} and \code{algorithm2} on time series \code{y}.
+Function \code{testL()} tests the null hypothesis of equal predictive ability of \code{algorithm1} and \code{algorithm2} on time series \code{y}. By default, it uses the optimal weighting scheme which exploits also the in-sample performance in order to deliver more power than the conventional tests.
 }
 \examples{
 set.seed(1)

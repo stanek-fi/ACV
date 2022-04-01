@@ -18,8 +18,8 @@ tsACV(
 \arguments{
 \item{y}{Univariate time-series object.}
 
-\item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
+\item{algorithm}{Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to \code{fitted} and \code{forecast} methods.
+Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments \verb{("yInSample", "yOutSample", "h")} or \verb{("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")} as inputs and produces a list with named elements \verb{("yhatInSample", "yhatOutSample")} containing vectors of in-sample and out-of-sample forecasts.}
 
 \item{m}{Length of the window on which the algorithm should be trained.}
 
@@ -34,7 +34,7 @@ Alternatively in the case of more complex custom algorithms, the algorithm may b
 \item{...}{Other parameters passed to the algorithm.}
 }
 \value{
-Matrix of computed contrasts. Each row corresponds to a particular period of the y time-series and each column corresponds to a particular location of the training window.
+Matrix of computed contrasts \code{Phi}. Each row corresponds to a particular period of the \code{y} time-series and each column corresponds to a particular location of the training window.
 }
 \description{
 Function \code{tsACV()} computes contrasts between forecasts produced by a given algorithm and the original time-series on which the algorithm is trained.

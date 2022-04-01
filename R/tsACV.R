@@ -5,8 +5,8 @@
 #' Unlike the similar `tsCV()` function from the `'forecast'` package, `tsACV()` also records in-sample contrasts as these can be leveraged to produce more accurate out-of-sample loss estimates.
 #'
 #' @param y Univariate time-series object.
-#' @param algorithm Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to fitted and forecast methods.
-#' Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments `("yInSample", "yOutSample", "h")` or `("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")` as inputs and produces list with named elements `("yhatInSample", "yhatOutSample")` containing vectors of in-sample and out-of-sample forecasts.
+#' @param algorithm Algorithm which is to be applied to the time-series. The object which the algorithm produces should respond to `fitted` and `forecast` methods.
+#' Alternatively in the case of more complex custom algorithms, the algorithm may be a function which takes named arguments `("yInSample", "yOutSample", "h")` or `("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")` as inputs and produces a list with named elements `("yhatInSample", "yhatOutSample")` containing vectors of in-sample and out-of-sample forecasts.
 #' @param m Length of the window on which the algorithm should be trained.
 #' @param h Number of predictions made after a single training of the algorithm.
 #' @param v Number of periods by which the estimation window progresses forward once the predictions are generated.
@@ -14,7 +14,7 @@
 #' @param lossFunction Loss function used to compute contrasts (defaults to squared error).
 #' @param ... Other parameters passed to the algorithm.
 #'
-#' @return Matrix of computed contrasts. Each row corresponds to a particular period of the y time-series and each column corresponds to a particular location of the training window.
+#' @return Matrix of computed contrasts `Phi`. Each row corresponds to a particular period of the `y` time-series and each column corresponds to a particular location of the training window.
 #'
 #' @examples
 #' set.seed(1)
@@ -28,7 +28,7 @@
 
 tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = function(y, yhat) {(y - yhat)^2}, ...) {
   mn <- length(y)
-  if(any(is.na(y))){
+  if (any(is.na(y))) {
     stop("y should not contain missing values")
   }
   y <- stats::ts(c(y, y[rep(1, h)]), start = stats::start(y), frequency = stats::frequency(y))
@@ -51,11 +51,11 @@ tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = fun
     yOutSample <- stats::window(y, times[1 + m + i], times[h + m + i])
 
     if (is.null(xreg)) {
-      if(all(c("yInSample", "yOutSample", "h")%in%methods::formalArgs(algorithm))){
+      if (all(c("yInSample", "yOutSample", "h") %in% methods::formalArgs(algorithm))) {
         model <- algorithm(yInSample = yInSample, yOutSample = yOutSample, h = h, ...)
         yhatInSample <- model$yhatInSample
         yhatOutSample <- model$yhatOutSample
-      }else{
+      } else {
         model <- algorithm(yInSample, ...)
         yhatOutSample <- forecast::forecast(model, h = h)$mean
         yhatInSample <- stats::fitted(model)
@@ -64,11 +64,11 @@ tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = fun
       xregInSample <- stats::window(xreg, times[1 + i], times[m + i])
       xregOutSample <- stats::window(xreg, times[1 + m + i], times[h + m + i])
 
-      if(all(c("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample")%in%methods::formalArgs(algorithm))){
+      if (all(c("yInSample", "yOutSample", "h", "xregInSample", "xregOutSample") %in% methods::formalArgs(algorithm))) {
         model <- algorithm(yInSample = yInSample, yOutSample = yOutSample, h = h, xregInSample = xregInSample, xregOutSample = xregOutSample, ...)
         yhatInSample <- model$yhatInSample
         yhatOutSample <- model$yhatOutSample
-      }else{
+      } else {
         model <- algorithm(yInSample, xreg = xregInSample, ...)
         yhatOutSample <- forecast::forecast(model, xreg = xregOutSample, h = h)$mean
         yhatInSample <- stats::fitted(model)
@@ -76,7 +76,7 @@ tsACV <- function(y, algorithm, m, h = 1, v = 1, xreg = NULL, lossFunction = fun
     }
 
     timeindices <- (1:(m + h) + i)
-    yhat[timeindices[timeindices<=mn], index] <- c(yhatInSample, yhatOutSample)[timeindices<=mn]
+    yhat[timeindices[timeindices <= mn], index] <- c(yhatInSample, yhatOutSample)[timeindices <= mn]
   }
   output <- apply(yhat, 2, function(x) lossFunction(y[seq_len(mn)], x))
   colnames(output) <- paste("i=", I, sep = "")
